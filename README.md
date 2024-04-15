@@ -10,7 +10,10 @@ _*Pure Literals*_: A pure literal is a literal that appears with only one polari
 ## How to run the program
 
 The program can be run using the following command:
-```python3 main.py input.txt``` where input.txt is the name of the input file containing the SAT problem.
+- `python3 main.py ../resources/input.txt` if you are in the sources directory.
+- `python3 ./sources/main.py ./resources/input.txt` if you are in the root directory.
+
+Where _input.txt is the name of the input file containing the SAT problem.
 
 ## Input Format
 
@@ -21,8 +24,8 @@ To solve your SAT problem, you need to provide the input in the following format
 - The input file should not contain any empty lines.
 - No comments allowed in the input file.
 
-You can find an example of the input file in the input.txt file.
-For your SAT problem, you can just replace the clauses in the input.txt file with your clauses, or you replace in the command line argument the name of the input file.
+You can find an example of the input file in the `/resources/input.txt` file.
+For your SAT problem, you can just replace the clauses in the `/resources/input.txt` file with your clauses, or you replace in the command line argument the name of the input file.
 
 ## Output Format
 

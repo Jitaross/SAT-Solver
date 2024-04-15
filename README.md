@@ -13,7 +13,7 @@ The program can be run using the following command:
 - `python3 main.py ../resources/input.txt` if you are in the sources directory.
 - `python3 ./sources/main.py ./resources/input.txt` if you are in the root directory.
 
-Where _input.txt is the name of the input file containing the SAT problem.
+Where _input.txt_ is the name of the input file containing the SAT problem.
 
 ## Input Format
 

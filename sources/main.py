@@ -1,5 +1,5 @@
 import sys
-import solveur as sol
+import solver_dpll as sol_dpll
 
 # Check if a filename was provided
 if len(sys.argv) != 2:
@@ -13,13 +13,9 @@ with open(sys.argv[1], "r") as file:
         temp = [int(n) for n in line.split()]
         data.append(temp)
 
-# Call the solver function from the solveur.py file
-solved = sol.solver(data)
-print(f"Solution found: {solved if solved else 'No solution found'}")
+# Call the solver function from the solver_it.py file
+solved_dpll = sol_dpll.dpll(data)
+print(f"Solution found: {solved_dpll if solved_dpll else 'No solution found'}")
 
 with open("output.txt", "w") as file:
-    file.write("Solution found: ")
-    if solved:
-        file.write(" ".join(str(literal) for literal in solved))
-    else:
-        file.write("No solution found")
+    file.write(f"{solved_dpll if solved_dpll else 'No solution found'}\n")

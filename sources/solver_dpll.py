@@ -5,7 +5,7 @@ It is a recursive version of the solver (DPLL).
 """
 
 
-def unit_clauses(literal, clauses):
+def remove_clauses(literal, clauses):
     """
     This function will eliminate the clauses that contain the literal and the negation of the literal in other clauses.
     Then it will return the new clauses list.
@@ -13,29 +13,7 @@ def unit_clauses(literal, clauses):
     :param clauses: The list of the clauses.
     :return: The list of clauses updated after the elimination of the clauses.
     """
-    new_clauses = []
-    for clause in clauses:
-        if literal not in clause:
-            # Keep the clause if the literal is not in it, and if the clause is not empty
-            new_clause = [x for x in clause if x != -literal]
-            new_clauses.append(new_clause)
-    return new_clauses
-
-
-def pure_literals(literal, clauses):
-    """
-    This function will eliminate the clauses that contain the pure literal.
-    Then it will return the new clauses list.
-    :param literal: The list of literals that will be used to eliminate the clauses.
-    :param clauses: The list of the clauses.
-    :return: The list of clauses updated after the elimination of the clauses.
-    """
-    new_clauses = []
-    for clause in clauses:
-        # Keep the clause if the literal is not in it
-        if literal not in clause:
-            new_clauses.append(clause)
-    return new_clauses
+    return [[lit for lit in clause if lit != -literal] for clause in clauses if literal not in clause]
 
 
 def find_unit_clause(clauses):
@@ -50,13 +28,13 @@ def find_unit_clause(clauses):
     return None
 
 
-def find_pure_literals(clauses):
+def find_pure_literals(literals, clauses):
     """
     This function will find the pure literal in the clauses.
+    :param literals: The list of literals in the clauses.
     :param clauses: The list of the clauses.
     :return: the first pure literal found, or None if there isn't.
     """
-    literals = [literal for clause in clauses for literal in clause]
     for literal in literals:
         if -literal not in literals:
             return literal
@@ -80,21 +58,22 @@ def dpll(clauses, instance=None):
     # Find a unit clause
     unit = find_unit_clause(clauses)
     if unit:
-        return dpll(unit_clauses(unit, clauses), instance + [unit])
+        return dpll(remove_clauses(unit, clauses), instance + [unit])
     # Find a pure literal
-    pure = find_pure_literals(clauses)
+    literals = {lit for clause in clauses for lit in clause}
+    pure = find_pure_literals(literals, clauses)
     if pure:
-        return dpll(pure_literals(pure, clauses), instance + [pure])
+        return dpll(remove_clauses(pure, clauses), instance + [pure])
 
     # Choose a literal
     literal = min(clauses, key=len)[0]
 
     # Try with the literal
-    res = dpll(unit_clauses(literal, clauses), instance + [literal])
-    if res:
+    res = dpll(remove_clauses(literal, clauses), instance + [literal])
+    if res is not False:
         return res
 
-    return dpll(unit_clauses(-literal, clauses), instance + [-literal])
+    return dpll(remove_clauses(-literal, clauses), instance + [-literal])
 
 
 if __name__ == "__main__":

@@ -28,11 +28,10 @@ def find_unit_clause(clauses):
     return None
 
 
-def find_pure_literals(literals, clauses):
+def find_pure_literals(literals):
     """
     This function will find the pure literal in the clauses.
     :param literals: The list of literals in the clauses.
-    :param clauses: The list of the clauses.
     :return: the first pure literal found, or None if there isn't.
     """
     for literal in literals:
@@ -41,15 +40,18 @@ def find_pure_literals(literals, clauses):
     return None
 
 
-def dpll(clauses, instance=None):
+def dpll(clauses, instance=None, history=None):
     """
     This function will solve the SAT problem using the DPLL algorithm.
+    :param history: The history of clauses before modifications
     :param clauses: List of clauses.
     :param instance: The current instance of the solution.
     :return: The final instance of the solution, or None if there is no solution.
     """
     if instance is None:
         instance = []
+    if history is None:
+        history = []
     if not clauses:
         return instance
     if [] in clauses:
@@ -58,22 +60,29 @@ def dpll(clauses, instance=None):
     # Find a unit clause
     unit = find_unit_clause(clauses)
     if unit:
-        return dpll(remove_clauses(unit, clauses), instance + [unit])
+        history.append((clauses[:], instance[:]))
+        return dpll(remove_clauses(unit, clauses), instance + [unit], history)
     # Find a pure literal
     literals = {lit for clause in clauses for lit in clause}
-    pure = find_pure_literals(literals, clauses)
+    pure = find_pure_literals(literals)
     if pure:
-        return dpll(remove_clauses(pure, clauses), instance + [pure])
+        history.append((clauses[:], instance[:]))
+        return dpll(remove_clauses(pure, clauses), instance + [pure], history)
 
     # Choose a literal
     literal = min(clauses, key=len)[0]
 
     # Try with the literal
-    res = dpll(remove_clauses(literal, clauses), instance + [literal])
+    res = dpll(remove_clauses(literal, clauses), instance + [literal], history)
+    count = len(history)
     if res is not False:
         return res
 
-    return dpll(remove_clauses(-literal, clauses), instance + [-literal])
+    while len(history) > count:
+        history.pop()
+    clauses, instance = history[-1][0], history[-1][1]
+
+    return dpll(remove_clauses(-literal, clauses), instance + [-literal], history)
 
 
 if __name__ == "__main__":

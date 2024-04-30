@@ -1,5 +1,5 @@
 import sys
-import solver_dpll as sol_dpll
+import DPLL as sol_dpll
 
 # Check if a filename was provided
 if len(sys.argv) != 2:
